@@ -1,0 +1,5 @@
+message IDSStatMessage{
+        required string product = 1;
+        required string module = 2;
+	required string value = 3;
+}
