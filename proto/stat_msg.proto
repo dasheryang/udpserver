@@ -2,4 +2,6 @@ message IDSStatMessage{
         required string product = 1;
         required string module = 2;
 	required string value = 3;
+	required string un_tag = 4;
+	required string un_key = 5;
 }
