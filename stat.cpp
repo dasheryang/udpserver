@@ -11,11 +11,13 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <string.h>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 
 #include "stat_msg.pb.h"
 
+extern "C" int touch_cache_unique_entry( const char* redis_ip, short redis_port, const char* hkey, const char* entry );
 extern "C" int write_cache_hash( const char* redis_ip, short redis_port, const char* hkey, const char* entry, float value ); 
 
 using namespace std;
@@ -33,7 +35,7 @@ public:
 	
 	strncpy( r_svr_ip_, redis_server_ip, 16 );
     socket_.async_receive_from(
-        boost::asio::buffer(data_, max_length), sender_endpoint_,
+	boost::asio::buffer(data_, max_length), sender_endpoint_,
         boost::bind(&server::handle_receive_from, this,
         boost::asio::placeholders::error,
         boost::asio::placeholders::bytes_transferred));
@@ -50,15 +52,30 @@ public:
 	IDSStatMessage msg_buf;
 	msg_buf.ParseFromString( data_str );
 
-	const char* hkey = msg_buf.product().c_str() ;
+    const char* hkey = msg_buf.product().c_str() ;
     const char* entry = msg_buf.module().c_str() ;
     float val = (float)atof( msg_buf.value().c_str() );
 
-    write_cache_hash( r_svr_ip_, r_svr_port_, hkey, entry, val );
+	const char* uni_tag = msg_buf.un_tag().c_str();
+	const char* uni_key = msg_buf.un_key().c_str();
+
+	bool b_cache_to_update = true;
 	
+	printf( "uni_tag len: %d",(int) strlen( uni_tag ) );
+	if( strlen(uni_tag) > 0 ){
+		int t_res = touch_cache_unique_entry( r_svr_ip_, r_svr_port_, uni_tag, uni_key );
+		printf("touch: %d", t_res );
+		if( 1 == t_res ){
+			b_cache_to_update = false;
+		}
+	}
+
+	
+	if( b_cache_to_update ){
+    	write_cache_hash( r_svr_ip_, r_svr_port_, hkey, entry, val );
+	}
 	char result_cs[10] = "200";
 	size_t len_result = strlen( result_cs );
-      
 	
 	socket_.async_send_to(
           boost::asio::buffer(result_cs, len_result), sender_endpoint_,
