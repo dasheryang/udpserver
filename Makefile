@@ -19,4 +19,4 @@ worklib:
 	
 
 epstat: proto worklib
-	c++ -Wall -g stat.cpp ./proto/stat_msg.pb.cc -I/usr/local/src/boost -I./proto -I/usr/local/protobuf/include/ -L/usr/local/protobuf/lib/ -lprotobuf ./*.a /usr/local/src/boost/stage/lib/*.a  -o epstat
+	c++ -Wall -g stat.cpp ./proto/stat_msg.pb.cc -I/usr/local/src/boost -I./proto -I/usr/local/protobuf/include/ /usr/local/protobuf/lib/libprotobuf.a ./*.a /usr/local/src/boost/stage/lib/*.a  -o epstat
