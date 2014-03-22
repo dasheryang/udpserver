@@ -1,0 +1,1 @@
+*/1 * * * * /bin/bash /var/www/stat_server/udpserver/bootstrap.sh >>/var/log/epstat.log 2>&1 &
