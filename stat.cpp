@@ -60,11 +60,9 @@ public:
 	const char* uni_key = msg_buf.un_key().c_str();
 
 	bool b_cache_to_update = true;
-	
-	printf( "uni_tag len: %d",(int) strlen( uni_tag ) );
+
 	if( strlen(uni_tag) > 0 ){
 		int t_res = touch_cache_unique_entry( r_svr_ip_, r_svr_port_, uni_tag, uni_key );
-		printf("touch: %d", t_res );
 		if( 1 == t_res ){
 			b_cache_to_update = false;
 		}

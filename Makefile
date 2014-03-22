@@ -14,7 +14,7 @@ clean:
 proto:
 	/usr/local/protobuf/bin/protoc -I./proto --cpp_out=./proto ./proto/stat_msg.proto
 worklib:
-	gcc -c ./credis/rediswork.c ./credis/hiredis/*.c -I./credis/hiredis/
+	gcc -Wall -g -c ./credis/rediswork.c ./credis/hiredis/*.c -I./credis/hiredis/
 	ar -r libcppcache.a  rediswork.o hiredis.o async.o sds.o net.o
 	
 
